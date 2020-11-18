@@ -26,11 +26,10 @@
     </div>
 
     <amap_dialog
-      @cancel="isShowAmapDialog=false"
-      :isShow="isShowAmapDialog"
+      :isShow.sync="isShowAmapDialog"
       @updatePosition="updatePosition"
-      :lon="coordinate.lon"
-      :lat="coordinate.lat"
+      :lon.sync="coordinate.lon"
+      :lat.sync="coordinate.lat"
     >
     </amap_dialog>
   </Card>

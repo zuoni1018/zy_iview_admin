@@ -52,10 +52,10 @@ export default [
   {
     path: '/a-test',
     name: 'a-test',
+    //developer:true,
     meta: {
       icon: 'md-contact',
       title: '测试用例',
-      access: ['super_admin']
     },
     component: Main,
     children: [
@@ -64,7 +64,6 @@ export default [
         name: 'normal-list',
         meta: {
           title: '普通列表',
-          access: ['super_admin']
         },
         component: () => import('@/view/a-test/normal-list/index')
       },
@@ -73,7 +72,6 @@ export default [
         name: 'current-page-jump',
         meta: {
           title: '当前页面跳转',
-          access: ['super_admin']
         },
         component: () => import('@/view/a-test/current-page-jump/page-01/index')
       },
@@ -82,7 +80,6 @@ export default [
         name: 'expand-components',
         meta: {
           title: '拓展组件',
-          access: ['super_admin']
         },
         component: () => import('@/view/a-test/expand-components/index')
       },
@@ -91,7 +88,6 @@ export default [
         name: 'coordinate-selection',
         meta: {
           title: '坐标拾取',
-          access: ['super_admin']
         },
         component: () => import('@/view/a-test/coordinate-selection/index')
       },
@@ -113,7 +109,7 @@ export default [
         name: 'banner',
         meta: {
           title: '轮播图',
-          access: ['super_admin']
+          access: []
         },
         component: () => import('@/view/market-manager/banner/index')
       },
