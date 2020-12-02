@@ -32,14 +32,14 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
   // console.log(to.name)
-  if (to.name === 'app_download') {
-    next()
-    return
-  }
-  if (to.name === 'camera-play') {
-    next()
-    return
-  }
+  // if (to.name === 'app_download') {
+  //   next()
+  //   return
+  // }
+  // if (to.name === 'camera-play') {
+  //   next()
+  //   return
+  // }
   // console.log("token  "+token);
   if (token === '' && to.name !== LOGIN_PAGE_NAME) {
     // console.log("未登录且要跳转的页面不是登录页");

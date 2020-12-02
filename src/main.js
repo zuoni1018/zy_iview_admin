@@ -34,6 +34,7 @@ import  EditDialogBottomButton from  '@/components/edit-dialog-bottom-button'
 // 高德地图
 //https://jimnox.gitee.io/amap-vue/intro/custom-extension.html?tdsourcetag=s_pctim_aiomsg
 import AmapVue from '@amap/amap-vue';
+import ExcelUtils from '@/utils/ExcelUtils'
 AmapVue.config.version = '2.0'; // 默认2.0，这里可以不修改
 AmapVue.config.key = '30f39f44bc108df282050e8200cb7263';
 AmapVue.config.plugins = [
@@ -55,6 +56,7 @@ Vue.use(TreeTable)
 Vue.use(VOrgTree)
 Vue.component('barcode', VueBarcode);
 
+//自定组件↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 //大图展示
 Vue.component('BigImg', BigImg);
 //自己封装的table
@@ -65,10 +67,17 @@ Vue.component('EditImgList', EditImgList);
 Vue.component('EditResList', EditResList);
 Vue.component('UploadSingleImage', UploadSingleImage);
 Vue.component('TipButton', TipButton);
-
 Vue.component('ImgVideoCover', ImgVideoCover);
-
 Vue.component('EditDialogBottomButton',EditDialogBottomButton)
+
+
+//自定全局方法↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+//Excel导出工具类
+Vue.prototype.ExcelUtils = ExcelUtils
+//公用工具类
+Vue.prototype.CommonUtils = CommonUtils
+
+
 
 
 Vue.use(VueLazyload)
@@ -87,7 +96,6 @@ Vue.config.productionTip = false
 Vue.prototype.$config = config
 Vue.prototype.$http = axios
 
-Vue.prototype.CommonUtils = CommonUtils
 
 
 /**

@@ -69,7 +69,7 @@
   import EditDialog from '@/view/a-test/normal-list/edit-dialog/index'
   import { defaultTableMixin } from '@/common/DefaultTableMixin'
   import { getBaseApi } from '@/api/users'
-  import excel from '@/libs/excel'
+  import ExcelUtils from '@/utils/ExcelUtils'
 
   export default {
     name: 'index',
@@ -78,7 +78,6 @@
 
     data () {
       return {
-        exportLoading: false,
         chooseData: [],
         searchFormData: {
           nickName: '',
@@ -126,6 +125,7 @@
             align: 'center',
             minWidth: 110,
             render: (h, params) => {
+              // console.log(params)
               let text = ''
               switch (params.row.accountState) {
                 case 1:
@@ -144,6 +144,7 @@
             align: 'center',
             width: 200,
             fixed: 'right',
+            needExport: false,
             render: (h, params) => {
 
               let text = ''
@@ -245,42 +246,41 @@
 
       exportExcel () {
         let exportData = []
-        for (let item of this.tableList) {
-          //转换下性别的格式
-          // let d=this.getFinanceText(item.isFinance);
-          item.isCreateOrder = (item.isCreateOrder === 1 ? '是' : '否')
-
-          let text = ''
-          switch (item.openMerchantState) {
-            case 0:
-              text = '未开通'
-              break
-            case 1:
-              text = '审核中'
-              break
-            case 2:
-              text = '已开通'
-              break
-            case 3:
-              text = '未通过'
-              break
-            default:
-              text = '--'
-              break
-          }
-          item.openMerchantState = text
-          exportData.push(item)
-        }
+        let dataKeyArray = ExcelUtils.getExportKeyArray(this.columnsData)
+        // for (let item of this.tableList) {
+        //   //转换下性别的格式
+        //   // let d=this.getFinanceText(item.isFinance);
+        //   item.isCreateOrder = (item.isCreateOrder === 1 ? '是' : '否')
+        //
+        //   let text = ''
+        //   switch (item.openMerchantState) {
+        //     case 0:
+        //       text = '未开通'
+        //       break
+        //     case 1:
+        //       text = '审核中'
+        //       break
+        //     case 2:
+        //       text = '已开通'
+        //       break
+        //     case 3:
+        //       text = '未通过'
+        //       break
+        //     default:
+        //       text = '--'
+        //       break
+        //   }
+        //   item.openMerchantState = text
+        //   exportData.push(item)
+        // }
         this.exportLoading = true
         let fileName = '用户数据导出'
-        const params = {
-          title: ['id', '昵称', '手机号码', '积分', '虚拟币', '收益', '可提现金额', '注册时间', '是否下过单', '商家端状态'],
-          key: ['id', 'nickName', 'mobile', 'integral', 'virtualMoney', 'profit', 'cashOutMoney', 'createTime', 'isCreateOrder', 'openMerchantState'],
-          data: exportData,
-          autoWidth: true,
-          filename: fileName
-        }
-        excel.export_array_to_excel(params)
+        ExcelUtils.exportArrayToExcel(
+          dataKeyArray.titleArray,
+          dataKeyArray.keyArray,
+          this.tableList,
+          fileName
+        )
         this.exportLoading = false
         this.$Message.info('导出成功！')
       }

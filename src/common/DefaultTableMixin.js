@@ -21,7 +21,15 @@ export const defaultTableMixin = {
 
   data () {
     return {
+
+      //当前页面跳转的时候用到
       nowShowUi:'main',
+      //Excel导出状态
+      exportLoading: false,
+
+
+
+
       isDialog:false,
       editDialogTitle:'',
       //表格接口访问参数
@@ -61,7 +69,6 @@ export const defaultTableMixin = {
 
       //记录切换前滚动到的位置
       lastScroll:0,
-
     }
   },
 
