@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
-import { forEach, hasOneOf, objEqual, oneOf } from '@/libs/tools'
+import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 
 const { title, cookieExpires, useI18n } = config
 
@@ -25,7 +25,6 @@ export const hasChild = (item) => {
 }
 
 const showThisMenuEle = (item, access) => {
-
   //判断有没有developer权限
   if (item.meta && item.meta.access && item.meta.access.length) {
     if (hasOneOf(item.meta.access, access)) {
@@ -45,24 +44,7 @@ export const getMenuByRouter = (list, access) => {
   let res = []
   forEach(list, item => {
     if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
-      let developer = item.developer
-      let mAccess = item.meta.access
-      if (mAccess === undefined) {
-        mAccess = []
-      }
-      let name = item.name
-      if (name !== undefined) {
-        mAccess.push(name)
-      }
-      //所有页面 developer 都可以访问
-      mAccess.push('developer')
-      //如果标记了 developer=true 的那么必须要有开发者权限才能访问
-      //其余的超级管理员都能访问
-      if (developer === undefined) {
-        mAccess.push('super_admin')
-      }
-      item.meta.access = mAccess
-      //console.log(mAccess)
+      item.meta.access=addAccess(item);
       let obj = {
         icon: (item.meta && item.meta.icon) || '',
         name: item.name,
@@ -76,6 +58,29 @@ export const getMenuByRouter = (list, access) => {
     }
   })
   return res
+}
+
+export const addAccess = (item) => {
+  let developer = item.developer
+  // console.log(developer)
+  let mAccess
+  if (item.meta !== undefined && item.meta.access !== undefined) {
+    mAccess = JSON.parse(JSON.stringify(item.meta.access))
+  } else {
+    mAccess = []
+  }
+  let name = item.name
+  if (name !== undefined) {
+    mAccess.push(name)
+  }
+  //所有页面 developer 都可以访问
+  mAccess.push('developer')
+  //如果标记了 developer=true 的那么必须要有开发者权限才能访问
+  //其余的超级管理员都能访问
+  if (developer === undefined) {
+    mAccess.push('super_admin')
+  }
+  return mAccess
 }
 
 /**
@@ -196,8 +201,10 @@ export const getNewTagList = (list, newRoute) => {
  * @param {*} route 路由列表
  */
 const hasAccess = (access, route) => {
-  if (route.meta && route.meta.access) {
-    return hasOneOf(access, route.meta.access)
+  let mAccess = addAccess(route)
+  if (route.meta && mAccess) {
+    // console.log(mAccess)
+    return hasOneOf(access, mAccess)
   } else {
     return true
   }

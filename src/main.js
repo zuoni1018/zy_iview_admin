@@ -35,6 +35,7 @@ import  EditDialogBottomButton from  '@/components/edit-dialog-bottom-button'
 //https://jimnox.gitee.io/amap-vue/intro/custom-extension.html?tdsourcetag=s_pctim_aiomsg
 import AmapVue from '@amap/amap-vue';
 import ExcelUtils from '@/utils/ExcelUtils'
+import DefaultDataStateUtils from '@/utils/DefaultDataStateUtils'
 AmapVue.config.version = '2.0'; // 默认2.0，这里可以不修改
 AmapVue.config.key = '30f39f44bc108df282050e8200cb7263';
 AmapVue.config.plugins = [
@@ -76,7 +77,7 @@ Vue.component('EditDialogBottomButton',EditDialogBottomButton)
 Vue.prototype.ExcelUtils = ExcelUtils
 //公用工具类
 Vue.prototype.CommonUtils = CommonUtils
-
+Vue.prototype.DefaultDataStateUtils = DefaultDataStateUtils
 
 
 

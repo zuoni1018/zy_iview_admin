@@ -4,7 +4,7 @@
 <template>
   <div>
     <common-banner
-      :show-type="0"
+      show-type="home"
     ></common-banner>
   </div>
 </template>

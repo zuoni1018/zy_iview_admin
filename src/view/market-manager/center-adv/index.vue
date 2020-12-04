@@ -4,7 +4,7 @@
 <template>
   <div>
     <common-banner
-      :show-type="1"
+      show-type="center"
     ></common-banner>
   </div>
 </template>

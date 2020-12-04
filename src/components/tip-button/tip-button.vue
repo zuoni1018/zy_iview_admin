@@ -6,7 +6,7 @@
 <!--图标+提示文字-->
 <template>
   <Tooltip :content="content" transfer :ref="tipId">
-    <Button :icon="icon" :type="type" @click="click" :size="size"></Button>
+    <Button :icon="icon" :type="type" @click="click" :size="size" :disabled="disabled"></Button>
   </Tooltip>
 </template>
 
@@ -17,6 +17,10 @@
       icon: {
         type: String,
         default: 'ios-search'
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       },
       size: {
         type: String,

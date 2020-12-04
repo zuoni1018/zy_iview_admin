@@ -56,11 +56,7 @@
       }
     },
     methods: {
-      getCommonData () {
-        if (this.id !== 0) {
-          this.title = '编辑用户资料'
-        }
-      },
+
       getData () {
         let param = {}
         param.id = this.id

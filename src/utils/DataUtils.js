@@ -194,7 +194,7 @@ export function getBannerUiConfig (showType, isDetails) {
   }
 
   switch (showType) {
-    case 0:
+    case 'home':
       config.originalImageHeight = 282
       config.originalImageWidth = 662
       break

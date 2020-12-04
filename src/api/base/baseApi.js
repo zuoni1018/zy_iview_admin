@@ -33,7 +33,7 @@ export class BaseApi {
   }
 
   updateById (param, isGetUrl) {
-    return this.post('updateById1', param, isGetUrl)
+    return this.post('updateById', param, isGetUrl)
   }
 
   deleteById (param, isGetUrl) {

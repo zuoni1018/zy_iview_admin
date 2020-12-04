@@ -30,7 +30,7 @@ export const editDialogMixin = {
       /**
        * 表单详情
        */
-      formDetails: undefined
+      formDetails: this.getDefaultForm()
     }
   },
   created () {
@@ -54,7 +54,6 @@ export const editDialogMixin = {
       this.$emit('update:isShow',false)
     },
 
-
     /**
      * 获取表单数据
      */
@@ -74,10 +73,10 @@ export const editDialogMixin = {
      *  弹窗可见状态
      */
     visibleChange (visible) {
-      this.formDetails=undefined;
       if (visible) {
         //弹窗显示的时候
         this.initFormDetails()
+        this.setTitle()
         this.loading=false;
         //获取数据
         if (this.id !== 0) {
@@ -89,13 +88,18 @@ export const editDialogMixin = {
       }
     },
 
-    initFormDetails () {
-      // this.formDetails= cleanParams(this.formDetails);
-      this.initMyFormDetails()
+    setTitle () {
+      if (this.id !== 0) {
+        this.title = '编辑';
+      }else {
+        this.title = '新增';
+      }
     },
-    initMyFormDetails () {
 
+    initFormDetails () {
+      this.formDetails = this.getDefaultForm();
     },
+
     /**
      * @param request 提交表单
      */
@@ -121,7 +125,6 @@ export const editDialogMixin = {
      * 字符串校验
      */
     valueValidatorString (value, msg) {
-
       if (this.CommonUtils.isEmpty(value)) {
         this.$Message.info(msg)
         this.loading = false
@@ -129,6 +132,11 @@ export const editDialogMixin = {
       } else {
         return false
       }
+    },
+
+    getDefaultForm(){
+      return undefined
     }
+
   }
 }

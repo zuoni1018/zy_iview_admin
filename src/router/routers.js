@@ -52,7 +52,7 @@ export default [
   {
     path: '/a-test',
     name: 'a-test',
-    //developer:true,
+    developer:true,
     meta: {
       icon: 'md-contact',
       title: '测试用例',
@@ -62,6 +62,7 @@ export default [
       {
         path: 'normal-list',
         name: 'normal-list',
+        developer:true,
         meta: {
           title: '普通列表',
         },
@@ -70,6 +71,7 @@ export default [
       {
         path: 'current-page-jump',
         name: 'current-page-jump',
+        developer:true,
         meta: {
           title: '当前页面跳转',
         },
@@ -78,6 +80,7 @@ export default [
       {
         path: 'expand-components',
         name: 'expand-components',
+        developer:true,
         meta: {
           title: '拓展组件',
         },
@@ -86,10 +89,20 @@ export default [
       {
         path: 'coordinate-selection',
         name: 'coordinate-selection',
+        developer:true,
         meta: {
           title: '坐标拾取',
         },
         component: () => import('@/view/a-test/coordinate-selection/index')
+      },
+      {
+        path: 'upload-menu',
+        name: 'upload-menu',
+        developer:true,
+        meta: {
+          title: '菜单更新',
+        },
+        component: () => import('@/view/a-test/upload-menu/index')
       },
     ]
   },
@@ -100,7 +113,6 @@ export default [
     meta: {
       icon: 'md-flame',
       title: '内容管理',
-      access: ['super_admin']
     },
     component: Main,
     children: [
@@ -109,7 +121,6 @@ export default [
         name: 'banner',
         meta: {
           title: '轮播图',
-          access: []
         },
         component: () => import('@/view/market-manager/banner/index')
       },
@@ -118,7 +129,6 @@ export default [
         name: 'center_adv',
         meta: {
           title: '中屏广告',
-          access: ['super_admin']
         },
         component: () => import('@/view/market-manager/center-adv/index')
       },
@@ -127,10 +137,10 @@ export default [
   {
     path: '/admin_user_manager',
     name: 'admin_user_manager',
+    superAdmin:true,
     meta: {
       icon: 'md-contacts',
       title: '系统用户管理',
-      access: ['super_admin']
     },
     component: Main,
     children: [
@@ -139,7 +149,6 @@ export default [
         name: 'admin_user_list',
         meta: {
           title: '用户管理',
-          access: ['super_admin']
         },
         component: () => import('@/view/admin-user-manager/admin-user-list/index')
       },
@@ -148,7 +157,6 @@ export default [
         name: 'admin_power_list',
         meta: {
           title: '角色管理',
-          access: ['super_admin']
         },
         component: () => import('@/view/admin-user-manager/admin-power-list/index')
       },
@@ -169,7 +177,6 @@ export default [
     meta: {
       icon: 'ios-settings',
       title: '系统设置',
-      access: ['super_admin']
     },
     component: Main,
     children: [
@@ -179,7 +186,6 @@ export default [
         name: 'proposal-list',
         meta: {
           title: '意见反馈',
-          access: ['super_admin']
         },
         component: () => import('@/view/sys-settings/proposal-list/index')
       },
@@ -188,7 +194,6 @@ export default [
         name: 'declare-manager',
         meta: {
           title: '声明管理',
-          access: ['super_admin', 'declare-manager']
         },
         component: () => import('@/view/sys-settings/declare-manager/index')
       },

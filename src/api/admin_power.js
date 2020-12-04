@@ -12,3 +12,9 @@ export function setPowerMenu (param) {
 export function getPowerList (param) {
   return baseApi.post('getPowerList', param)
 }
+export function updateAdminPowerList (param) {
+  return baseApi.post('updateAdminPowerList', param)
+}
+export function getAdminPowerList (param) {
+  return baseApi.post('getAdminPowerList', param)
+}

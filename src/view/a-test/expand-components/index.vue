@@ -43,12 +43,9 @@
         type="error">
       </TipButton>
     </div>
-    <Divider orientation="left">导出菜单</Divider>
-    <div>{{menuData}}</div>
   </Card>
 </template>
 <script>
-  import routers from '@/router/routers'
 
   export default {
     name: 'index',
@@ -65,50 +62,9 @@
           videoUrl: '',
           videoCoverUrl: ''
         },
-        menuData: '',
       }
     },
-
-    mounted () {
-      let list = routers
-      let mList = []
-      for (let j = 0, len = list.length; j < len; j++) {
-        let d = this.getData(list[j])
-        if (d !== null) {
-          mList.push(d)
-        }
-      }
-      this.menuData = mList
-    },
-
     methods: {
-      getData (listData) {
-        let mData
-        let pChildren = listData.children
-        let mChildren = []
-        if (pChildren !== undefined) {
-          for (let j = 0, len = pChildren.length; j < len; j++) {
-            let d = this.getData(pChildren[j])
-            if (d !== null) {
-              mChildren.push(d)
-            }
-          }
-        }
-        let name = listData.name
-        let meta = listData.meta
-        let title = meta.title
-        let hideInMenu = meta.hideInMenu
-        mData = {
-          name: name,
-          title: title,
-          children: mChildren
-        }
-        //console.log(hideInMenu)
-        if (hideInMenu !== undefined && hideInMenu === true) {
-          return null
-        }
-        return mData
-      },
     }
 
   }

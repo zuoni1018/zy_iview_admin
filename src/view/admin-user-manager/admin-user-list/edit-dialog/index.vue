@@ -3,13 +3,10 @@
   <Modal
     :value="isShow"
     :title="title"
-    @on-ok="ok"
-    @on-cancel="cancel"
-    :loading="loading"
+    :closable="false"
+    :mask-closable="false"
     @on-visible-change="visibleChange">
-
-    <Form :model="formDetails">
-
+    <Form :model="formDetails" v-if="formDetails!==undefined">
       <FormItem label="姓名">
         <label>
           <Input v-model="formDetails.name" :maxlength=15></Input>
@@ -20,14 +17,6 @@
           <Input v-model="formDetails.mobile" :maxlength=15></Input>
         </label>
       </FormItem>
-
-<!--      <FormItem label="邮箱">-->
-<!--        <label>-->
-<!--          <Input v-model="formDetails.email"></Input>-->
-<!--        </label>-->
-<!--      </FormItem>-->
-
-
       <FormItem label="角色">
         <label>
           <Select
@@ -40,70 +29,47 @@
           </Select>
         </label>
       </FormItem>
-
       <FormItem label="密码">
         <label>
           <Input v-model="formDetails.password"></Input>
         </label>
-
-<!--        <Button style="margin-top: 10px"  type="primary" ghost v-show="id!==0" @click="resetPassword">重置</Button>-->
       </FormItem>
-
+      <FormItem label="状态">
+        <RadioGroup v-model="formDetails.state">
+          <Radio label="normal">正常</Radio>
+          <Radio label="forbidden">禁止</Radio>
+        </RadioGroup>
+      </FormItem>
     </Form>
+    <div slot="footer">
+      <EditDialogBottomButton
+        :loading="loading"
+        @handleCancel="cancel"
+        @handleOk="ok"
+      ></EditDialogBottomButton>
+    </div>
   </Modal>
-
-
 </template>
 
 <script>
 
-  import { editDialogMixin } from '@/base/EditDialogMixin'
+  import { editDialogMixin } from '@/base/EditDialogMixin2'
   import { getPowerList } from '@/api/admin_power'
-  import { getBaseApi, resetPassword } from '@/api/admin_user'
+  import { getBaseApi } from '@/api/admin_user'
 
   export default {
-    name: 'save',
+    name: 'edit-dialog',
     mixins: [editDialogMixin],
     data () {
       return {
         // 弹窗配置
         powerList: [],
-        bindPowerList: [28, 29, 3, 4, 5, 6, 7],
-        formDetails: {
-          adminPowerId: 0
-        }
+        bindPowerList: [],
       }
     },
     methods: {
-      //初始化数据
-      initData () {
-
-      },
-      resetPassword () {
-        this.$Modal.confirm({
-          title: '提示',
-          content: '是否重置密码？',
-          onOk: () => {
-            resetPassword({ id: this.id })
-              .then(response => {
-                if (response.status === 200) {
-                  this.$Message.success(response.msg)
-                } else {
-                  this.$Message.error(response.msg)
-                }
-              })
-          },
-          onCancel: () => {
-          }
-        })
-      },
       getCommonData () {
-        this.bindPowerList=[];
-        if (this.id === 0) {
-          this.title = '新增用户'
-        } else {
-          this.title = '编辑用户'
-        }
+        this.bindPowerList = []
         getPowerList()
           .then(response => {
             this.powerList = response.data.list
@@ -118,10 +84,17 @@
             this.bindPowerList = response.data.powerList
           })
       },
-
+      getDefaultForm () {
+        return {
+          name: '',
+          mobile: '',
+          password: '',
+          state: 'normal'
+        }
+      },
       ok () {
-        this.loading = true
         let form = this.formDetails
+        console.log(form)
         if (this.valueValidatorString(form.name, '请输入用户姓名')) {
           return
         }
@@ -131,13 +104,7 @@
         this.formDetails.powerIds = JSON.stringify(this.bindPowerList)
         let request
         //校验完成进行提交数据
-        if (this.id === 0) {
-          //新增
-          request = getBaseApi().insert(this.formDetails)
-        } else {
-          //更新
-          request = getBaseApi().updateById(this.formDetails)
-        }
+        request = getBaseApi().insert(this.formDetails)
         this.commit(request)
       },
     },

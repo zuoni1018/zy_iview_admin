@@ -8,45 +8,38 @@ export const defaultTableMixin = {
 
   mounted () {
     // console.log('vue 生命周期 mounted')
-
-    if(!this.isDialog){
+    if (!this.isDialog) {
+      this.doSearchFormData = this.searchFormData
       this.getCommonData()
       //页面展示的时候
       //获取表格数据
       this.selectPage()
     }
-
-
   },
 
   data () {
     return {
 
       //当前页面跳转的时候用到
-      nowShowUi:'main',
+      nowShowUi: 'main',
       //Excel导出状态
       exportLoading: false,
-
-
-
-
-      isDialog:false,
-      editDialogTitle:'',
+      isDialog: false,
+      editDialogTitle: '',
       //表格接口访问参数
       pageParam: {
         pageNum: 1,//当前页码
         pageSize: 20,//每页访问条数
-        sortKey: '',//排序key
+        //sortKey: '',//排序key
         // sortOrder: '',//排序方式
-        search: '',//模糊搜索
-        order:'',//排序方式
+        //search: '',//模糊搜索
+        //order: '',//排序方式
       },
+      total: 0,
 
-      searchText:'',
       //编辑id
       clickId: 0,
       pageSizeOpts: [20, 40, 80],
-      total:0,
 
       //控制表格是否在加载中
       tableLoading: true,
@@ -55,20 +48,14 @@ export const defaultTableMixin = {
       isShowEditDialog: false,
       //数据源
       tableList: [],
-
-      searchFormData: {
-        name:'',
-        state:-1,
-      },
-
+      searchFormData: this.getDefaultSearchForm(),
       doSearchFormData: {
-        name:'',
-        state:-1,
+        name: '',
       },
-      isChangeData:false,
+      isChangeData: false,
 
       //记录切换前滚动到的位置
-      lastScroll:0,
+      lastScroll: 0,
     }
   },
 
@@ -81,32 +68,32 @@ export const defaultTableMixin = {
 
     },
 
-    clickBack(){
-      if(this.isChangeData){
-        this.$emit('refreshData');
+    clickBack () {
+      if (this.isChangeData) {
+        this.$emit('refreshData')
       }
-      this.$emit('back');
+      this.$emit('back')
     },
 
-    changeNowShowUi(tag){
+    changeNowShowUi (tag) {
       //记录滚动位置
-      this.lastScroll=document.getElementById('main_content').scrollTop;
-      this.nowShowUi=tag;
+      this.lastScroll = document.getElementById('main_content').scrollTop
+      this.nowShowUi = tag
     },
 
-    back(){
-      this.nowShowUi='main'
-      if(this.lastScroll>0){
+    back () {
+      this.nowShowUi = 'main'
+      if (this.lastScroll > 0) {
         this.$nextTick(() => {
-          document.getElementById('main_content').scrollTop=this.lastScroll;
-        });
+          document.getElementById('main_content').scrollTop = this.lastScroll
+        })
       }
     },
 
     //监听表格里面的方法------------------------------------------
 
-    changePageParam(newPageParam){
-      this.pageParam =newPageParam;
+    changePageParam (newPageParam) {
+      this.pageParam = newPageParam
       this.selectPage()
     },
 
@@ -144,11 +131,10 @@ export const defaultTableMixin = {
       this.selectPage()
     },
 
-    reFreshData(){
+    reFreshData () {
       this.pageParam.pageNum = 1
       this.selectPage()
     },
-
 
     /**
      * @param isBack1 是否跳转到第一页
@@ -158,7 +144,7 @@ export const defaultTableMixin = {
       this.tableLoading = true
       if (isBack1) {
         //跳转到第一页
-       this.pageNum=1;
+        this.pageNum = 1
       }
       this.selectPage()
     },
@@ -173,7 +159,7 @@ export const defaultTableMixin = {
     getDefaultPageParam () {
       let param = {}
       param = this.pageParam
-      return Object.assign(param, this.doSearchFormData);
+      return Object.assign(param, this.doSearchFormData)
     },
 
     /**
@@ -218,62 +204,44 @@ export const defaultTableMixin = {
      * @param showText 提示语句
      */
     showConfirmDialog (mRequest, showText) {
-        this.$Modal.confirm({
-          title: '提示',
-          content: showText,
-          onOk: () => {
-            post(mRequest.url,mRequest.param)
-              .then(response => {
+      this.$Modal.confirm({
+        title: '提示',
+        content: showText,
+        onOk: () => {
+          post(mRequest.url, mRequest.param)
+            .then(response => {
               if (response.status === 200) {
-                this.$Message.success(response.msg);
-                this.pageParam.pageNum=1;
-                this.selectPage();
+                this.$Message.success(response.msg)
+                this.pageParam.pageNum = 1
+                this.selectPage()
               } else {
-                this.$Message.error(response.msg);
+                this.$Message.error(response.msg)
               }
             })
 
-          },
-          onCancel: () => {
-          }
-        });
-    }
+        },
+        onCancel: () => {
+        }
+      })
+    },
 
+    getDefaultSearchForm () {
+      return undefined
+    },
     /**
-     * @param entity 禁止
-     *  @param forbiddenUrl url
+     * 重置表单数据
      */
-    // defaultForbiddenEntity(entity, forbiddenUrl,pText) {
-    //   let text;
-    //   if (entity.state === 1) {
-    //     text = "是否禁用";
-    //   } else {
-    //     text = "是否启用";
-    //   }
-    //   if(pText!==undefined){
-    //     text=pText;
-    //   }
-    //
-    //
-    //   this.$Modal.confirm({
-    //     title: '提示',
-    //     content: text,
-    //     onOk: () => {
-    //       post(forbiddenUrl,entity)
-    //         .then(response => {
-    //         if (response.status === 200) {
-    //           this.$Message.success(response.msg);
-    //           this.baseRefresh(false);
-    //         } else {
-    //           this.$Message.error(response.msg);
-    //         }
-    //       })
-    //
-    //     },
-    //     onCancel: () => {
-    //     }
-    //   });
-    // }
-
+    resetSearchForm () {
+      this.searchFormData = this.getDefaultSearchForm()
+      this.doSearchForm()
+    },
+    /**
+     * 执行搜索
+     */
+    doSearchForm () {
+      this.doSearchFormData = this.searchFormData
+      this.pageParam.pageNum = 1
+      this.selectPage()
+    },
   }
 }

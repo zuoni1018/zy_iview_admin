@@ -19,10 +19,21 @@
             </label>
           </FormItem>
           <FormItem label="内容">
-
             <label>
               <Input v-model="searchFormData.content" placeholder="请输入"
                      clearable></Input>
+            </label>
+          </FormItem>
+          <FormItem label="状态">
+            <label>
+              <Select
+                v-model="searchFormData.state"
+                style="width: 100px"
+                placeholder="选择状态">
+                <Option v-for="item in stateList"
+                        :value="item.id" :key="item.id">{{ item.name }}
+                </Option>
+              </Select>
             </label>
           </FormItem>
         </Form>
@@ -62,59 +73,65 @@
 
     data () {
       return {
-        chooseData: [],
-        searchFormData: {
-          content: '',
-          pName: '',
-          state: -1,
-          mobile:'',
-          nickName:''
-        },
         stateList: [
           {
-            id: -1,
-            name: '全部'
+            id: 'all',
+            name: '全部',
           },
           {
-            id: 1,
-            name: '正常'
+            id: 'normal',
+            name: '未处理',
           },
           {
-            id: 2,
-            name: '禁用'
+            id: 'forbidden',
+            name: '已处理',
           }
         ],
         columnsData: [
           { type: 'index', width: 60, align: 'center' },
+          { title: '昵称', key: 'nickName', width: 150, align: 'center' },
+          { title: '手机号码', key: 'mobile', width: 150, align: 'center' },
+          { title: '内容', key: 'content', minWidth: 180, align: 'center' },
+          { title: '创建时间', key: 'createTime', width: 180, align: 'center' },
           {
-            title: '头像',
+            title: '状态',
             align: 'center',
             width: 80,
             render: (h, params) => {
-              return h('BigImg', {
-                props: {
-                  showImageWidth: 40,
-                  originalImageHeight: 40,
-                  originalImageWidth: 40,
-                  imageUrl: params.row.headImage
-                },
-              })
+              return h('div', this.DefaultDataStateUtils.getStringByStateAndList(params.row.state, this.stateList))
             }
           },
-          { title: '昵称', key: 'nickName', width: 150, align: 'center' },
-          { title: '手机号码', key: 'mobile', width: 150, align: 'center' },
-          // { title: '标题', key: 'title', minWidth: 180, align: 'center' },
-          { title: '内容', key: 'content', minWidth: 180, align: 'center' },
           {
             title: '操作',
             key: 'action',
             align: 'center',
-            width: 300,
+            width: 200,
             render: (h, params) => {
               return h('div', [
-
-                  h('Button', {
+                  h('TipButton', {
                     props: {
+                      content: '处理',
+                      icon: 'md-checkmark',
+                      type: 'success',
+                      size: 'small',
+                      disabled: params.row.state !== 'normal',
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        let param = {}
+                        param.id = params.row.id
+                        let text1 = '是否处理？'
+                        this.showConfirmDialog(getBaseApi().forbiddenById(param, true), text1)
+                      }
+                    }
+                  }, ''),
+                  h('TipButton', {
+                    props: {
+                      content: '删除',
+                      icon: 'md-trash',
                       type: 'error',
                       size: 'small',
                     },
@@ -129,7 +146,7 @@
                         this.showConfirmDialog(getBaseApi().deleteById(param, true), text1)
                       }
                     }
-                  }, '删除'),
+                  }, ''),
                 ]
               )
             }
@@ -138,25 +155,14 @@
       }
     },
     methods: {
-      // 重置搜索
-      resetSearchForm () {
-        this.searchFormData = {
+      getDefaultSearchForm () {
+        return {
           content: '',
-          pName: '',
-          state: -1,
-          mobile:'',
-          nickName:''
+          mobile: '',
+          nickName: '',
+          state: 'all',
         }
-        this.doSearchForm()
       },
-
-      // 执行搜索
-      doSearchForm () {
-        this.doSearchFormData = this.searchFormData
-        this.pageParam.pageNum = 1
-        this.selectPage()
-      },
-
       selectPage () {
         let param = this.getDefaultPageParam()
         this.defaultSelectPage(getBaseApi().selectPage(param))

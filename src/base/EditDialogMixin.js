@@ -26,7 +26,7 @@ export const editDialogMixin = {
       /**
        * 确认按钮弹窗
        */
-      loading: true,
+      loading: false,
       /**
        * 表单详情
        */

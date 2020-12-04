@@ -1,18 +1,18 @@
 <template>
-  <!--用户资料管理-->
   <div>
-
     <Card style="margin-bottom: 10px">
       <Row type="flex">
         <Form inline>
           <FormItem label="姓名">
             <label>
-              <Input v-model="searchFormData.name" placeholder="请输入" :maxlength=15 clearable></Input>
+              <Input v-model="searchFormData.name" placeholder="请输入" :maxlength=15
+                     clearable></Input>
             </label>
           </FormItem>
           <FormItem label="角色">
             <label>
-              <Input v-model="searchFormData.powerName" placeholder="请输入" :maxlength=15 clearable></Input>
+              <Input v-model="searchFormData.powerName" placeholder="请输入" :maxlength=15
+                     clearable></Input>
             </label>
           </FormItem>
           <FormItem label="状态">
@@ -28,18 +28,15 @@
             </label>
           </FormItem>
         </Form>
-
         <div style="margin-top:34px">
           <Button @click="doSearchForm" style="margin-left: 10px" type="primary">查询</Button>
           <Button @click="resetSearchForm" style="margin-left: 10px" type="primary" ghost>重置
           </Button>
-          <Button @click="showEditDialog(0)" style="margin-left: 10px" type="primary">新增用户</Button>
-
+          <Button @click="showEditDialog(0)" style="margin-left: 10px" type="success" ghost>新增
+          </Button>
         </div>
       </Row>
     </Card>
-
-
     <my-main-table
       :table-loading="tableLoading"
       :columnsData="columnsData"
@@ -49,64 +46,34 @@
       @onSelectionChange="onSelectionChange"
       @changePageParam="changePageParam"
     >
-
       <div slot="table_top">
         <Row type="flex" justify="end">
-
-<!--          <Button icon="md-download"-->
-<!--                  style="margin-left: 10px">下载-->
-<!--          </Button>-->
-
-
-<!--          <Button @click="batchDelete" style="margin-left: 10px" type="error">删除选中</Button>-->
-
         </Row>
       </div>
-
     </my-main-table>
-
-    <Save :isShow="isShowEditDialog" :id="clickId" @cancel="isShowEditDialog=false"
-          @refresh="baseRefresh(false)"></Save>
+    <EditDialog
+      :isShow.sync="isShowEditDialog"
+      :id="clickId"
+      @refresh="baseRefresh(false)"
+    ></EditDialog>
   </div>
 </template>
 
 <script>
 
-  import Save from '@/view/admin-user-manager/admin-user-list/save/index'
-  import { getButtonState } from '@/view/settings/apiType'
+  import EditDialog from '@/view/admin-user-manager/admin-user-list/edit-dialog/index'
   import { defaultTableMixin } from '@/common/DefaultTableMixin'
-  import { getBaseApi, resetPassword } from '@/api/admin_user'
-  import MyMainTable from '@/components/my-mian-table'
+  import { getBaseApi } from '@/api/admin_user'
 
   export default {
     name: 'index',
     mixins: [defaultTableMixin],
-    components: { MyMainTable, Save },
+    components: { EditDialog },
 
     data () {
       return {
-        chooseData:[],
-        searchFormData: {
-          name: '',
-          powerName: '',
-          state: -1,
-        },
-        stateList: [
-          {
-            id: -1,
-            name: '全部',
-          },
-          {
-            id: 1,
-            name: '正常',
-          },
-          {
-            id: 2,
-            name: '停用',
-          }
-        ],
+        stateList: this.DefaultDataStateUtils.stateList,
         columnsData: [
-          // { type: 'selection', width: 60, align: 'center' },
           { type: 'index', width: 60, align: 'center' },
           { title: '用户id', key: 'id', width: 80, align: 'center' },
           { title: '姓名', key: 'name', minWidth: 120, align: 'center' },
@@ -118,14 +85,8 @@
             title: '状态',
             align: 'center',
             width: 80,
-            render (h, params) {
-              let text
-              if (params.row.state === 1) {
-                text = '正常'
-              } else {
-                text = '停用'
-              }
-              return h('div', text)
+            render: (h, params) => {
+              return h('div', this.DefaultDataStateUtils.getStringByState(params.row.state))
             }
           },
           {
@@ -134,16 +95,11 @@
             align: 'center',
             width: 300,
             render: (h, params) => {
-              let model = getButtonState(params.row.state)
-              let text = model.text
-              if (params.row.state === 1) {
-                text = '停用'
-              } else {
-                text = '启用'
-              }
               return h('div', [
-                  h('Button', {
+                  h('TipButton', {
                     props: {
+                      content: '编辑',
+                      icon: 'md-create',
                       type: 'primary',
                       size: 'small',
                       disabled: params.row.isSys === 1,
@@ -156,57 +112,11 @@
                         this.showEditDialog(params.row.id)
                       }
                     }
-                  }, '编辑'),
-                  // h('Button', {
-                  //   props: {
-                  //     type: 'primary',
-                  //     size: 'small',
-                  //     disabled: params.row.isSys === 1,
-                  //   },
-                  //   style: {
-                  //     marginRight: '5px'
-                  //   },
-                  //   on: {
-                  //     click: () => {
-                  //       this.$Modal.confirm({
-                  //         title: '提示',
-                  //         content: '是否重置密码？',
-                  //         onOk: () => {
-                  //           resetPassword({ id: params.row.id })
-                  //             .then(response => {
-                  //               if (response.status === 200) {
-                  //                 this.$Message.success(response.msg)
-                  //               } else {
-                  //                 this.$Message.error(response.msg)
-                  //               }
-                  //             })
-                  //         },
-                  //         onCancel: () => {
-                  //         }
-                  //       })
-                  //     }
-                  //   }
-                  // }, '重置密码'),
-                  h('Button', {
+                  }, ''),
+                  h('TipButton', {
                     props: {
-                      type: 'primary',
-                      size: 'small',
-                      disabled: params.row.isSys === 1,
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        let param = {}
-                        param.id = params.row.id
-                        let text1 = '是否' + text + '？'
-                        this.showConfirmDialog(getBaseApi().forbiddenById(param, true), text1)
-                      }
-                    }
-                  }, text),
-                  h('Button', {
-                    props: {
+                      content: '删除',
+                      icon: 'md-trash',
                       type: 'error',
                       size: 'small',
                       disabled: params.row.isSys === 1,
@@ -222,7 +132,7 @@
                         this.showConfirmDialog(getBaseApi().deleteById(param, true), text1)
                       }
                     }
-                  }, '删除'),
+                  }, ''),
                 ]
               )
             }
@@ -230,47 +140,16 @@
         ],
       }
     },
-
     methods: {
-
       //重置搜索
-      resetSearchForm () {
-        this.searchFormData.state = -1
-        this.searchFormData.name = ''
-        this.searchFormData.powerName = ''
-        this.doSearchFormData = this.searchFormData
-        this.pageParam.pageNum = 1
-        this.selectPage()
-      },
-
-      //执行搜索
-      doSearchForm () {
-        this.doSearchFormData = this.searchFormData
-        this.pageParam.pageNum = 1
-        this.selectPage()
-      },
-
-      onSelectionChange (data) {
-        this.chooseData = data
-      },
-
-      batchDelete(){
-
-        if(this.chooseData.length===0){
-          this.$Message.info("请先勾选数据");
-          return
+      getDefaultSearchForm () {
+        return {
+          content: '',
+          powerName: '',
+          name: '',
+          state: 'all',
         }
-
-        let ids =[]
-        for (let i = 0; i < this.chooseData.length; i++) {
-          ids.push(this.chooseData[i].id)
-        }
-        let param = {}
-        param.ids =JSON.stringify(ids);
-        let text1 = '是否删除？'
-        this.showConfirmDialog(getBaseApi().batchDeleteById(param, true), text1)
       },
-
       selectPage () {
         let param = this.getDefaultPageParam()
         this.defaultSelectPage(getBaseApi().selectPage(param))

@@ -79,11 +79,7 @@
     data () {
       return {
         chooseData: [],
-        searchFormData: {
-          nickName: '',
-          headImage: '',
-          accountState: -1
-        },
+
         clickState: 0,
 
         stateList: [
@@ -199,45 +195,16 @@
       }
     },
     methods: {
-      // 重置搜索
-      resetSearchForm () {
 
-        // this.$isEmpty(11)
 
-        this.searchFormData = {
+      getDefaultSearchForm () {
+        return {
           accountState: -1,
           mobile: '',
           nickName: '',
         }
-        this.doSearchForm()
       },
 
-      // 执行搜索
-      doSearchForm () {
-        this.doSearchFormData = this.searchFormData
-        this.pageParam.pageNum = 1
-        this.selectPage()
-      },
-
-      onSelectionChange (data) {
-        this.chooseData = data
-      },
-
-      batchDelete () {
-        if (this.chooseData.length === 0) {
-          this.$Message.info('请先勾选数据')
-          return
-        }
-
-        let ids = []
-        for (let i = 0; i < this.chooseData.length; i++) {
-          ids.push(this.chooseData[i].id)
-        }
-        let param = {}
-        param.ids = JSON.stringify(ids)
-        let text1 = '是否删除？'
-        this.showConfirmDialog(getBaseApi().batchDeleteById(param, true), text1)
-      },
 
       selectPage () {
         let param = this.getDefaultPageParam()

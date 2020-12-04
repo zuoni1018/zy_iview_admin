@@ -13,4 +13,6 @@ export function getAdminMenuTree (param) {
 export function getAdminMenuListByPowerId (param) {
   return baseApi.post('getAdminMenuListByPowerId', param)
 }
-
+export function updateAdminMenu (param) {
+  return baseApi.post('updateAdminMenu', param)
+}
