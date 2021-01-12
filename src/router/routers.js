@@ -199,6 +199,35 @@ export default [
       },
     ]
   },
+  {
+    path: '/developer',
+    name: 'developer',
+    developer:true,
+    meta: {
+      icon: 'md-hammer',
+      title: '开发配置',
+    },
+    component: Main,
+    children: [
+
+      {
+        path: 'ali-config',
+        name: 'ali-config',
+        meta: {
+          title: '阿里云配置',
+        },
+        component: () => import('@/view/developer/config-ali/index')
+      },
+      {
+        path: 'ali-sms',
+        name: 'ali-sms',
+        meta: {
+          title: '短信配置',
+        },
+        component: () => import('@/view/developer/config-sms/index')
+      },
+    ]
+  },
   // {
   //   path: '/customer-service',
   //   name: 'customer-service',
