@@ -77,7 +77,7 @@
 
 <script>
   import { getAliOssPolicy } from '@/api/file'
-  import config from '@/config'
+
   export default {
     name: 'ossUpload',
     props: {
@@ -100,7 +100,7 @@
         loading: false,
         // 附件上传携带参数
         uploadData: {},
-        uploadHost: config.baseUrl.dev+"file/uploadFile",
+        uploadHost: '',
         fileUrl: '',
       }
     },
@@ -110,15 +110,23 @@
        */
       handleSuccess (response, file) {
         this.hideSpin()
+        let fileExtension = file.name.substring(file.name.lastIndexOf('.') + 1)
         console.log(response)
+        if(response!==undefined){
+          if(response.data!==undefined){
+            let mimeType=response.data.mimeType;
+            if(mimeType.indexOf("image") !== -1){
+              this.fileUrl=this.fileUrl+"?m_w="+response.data.width+"&m_h="+response.data.height
+            }
+          }
+        }
+        // this.loading = false
         this.$Message.info('上传成功')
-        let ossUploadRes=response.data.ossUploadRes;
         this.$emit('onSuccessWithExtension', {
-          fileUrl: ossUploadRes.resUrl,
-          fileExtension: ossUploadRes.resType
+          fileUrl: this.fileUrl,
+          fileExtension: fileExtension
         })
-        this.$emit('onSuccessOssUploadRes',ossUploadRes)
-        this.$emit('on-success', ossUploadRes.resUrl)
+        this.$emit('on-success', this.fileUrl)
       },
       /**
        * 上传文件之间获取OSS参数
@@ -128,21 +136,21 @@
       async beforeUpload () {
         this.showSpin()
         //获取OSS参数
-        // let aliOssPolicy = await getAliOssPolicy()
-        // //判断是否成功
-        // if (aliOssPolicy.status === 200) {
-        //   this.uploadHost = aliOssPolicy.data.host
-        //   this.uploadData = aliOssPolicy.data
-        //   this.fileUrl = aliOssPolicy.data.url
-        //   return true
-        // } else {
-        //   //失败
-        //   this.hideSpin()
-        //   if (aliOssPolicy.msg !== undefined) {
-        //     this.$Message.error(aliOssPolicy.msg)
-        //   }
-        //   return new Promise.reject()
-        // }
+        let aliOssPolicy = await getAliOssPolicy()
+        //判断是否成功
+        if (aliOssPolicy.status === 200) {
+          this.uploadHost = aliOssPolicy.data.host
+          this.uploadData = aliOssPolicy.data
+          this.fileUrl = aliOssPolicy.data.url
+          return true
+        } else {
+          //失败
+          this.hideSpin()
+          if (aliOssPolicy.msg !== undefined) {
+            this.$Message.error(aliOssPolicy.msg)
+          }
+          return new Promise.reject()
+        }
       },
       /**
        * 文件上传失败

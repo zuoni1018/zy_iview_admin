@@ -226,6 +226,14 @@ export default [
         },
         component: () => import('@/view/developer/config-sms/index')
       },
+      {
+        path: 'ali-email',
+        name: 'ali-email',
+        meta: {
+          title: '邮箱配置',
+        },
+        component: () => import('@/view/developer/config-email/index')
+      },
     ]
   },
   // {

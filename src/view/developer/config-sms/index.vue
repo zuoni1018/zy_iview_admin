@@ -39,7 +39,6 @@
     <EditDialog
       :isShow.sync="isShowEditDialog"
       :id="clickId"
-      :state="clickState"
       @refresh="baseRefresh(false)"
     ></EditDialog>
   </div>
